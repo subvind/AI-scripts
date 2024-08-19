@@ -664,9 +664,6 @@ async function main() {
         await fs.copyFile(absolutePath, backupPath);
       }
 
-      // Create necessary directories for the target file
-      await fs.mkdir(path.dirname(absolutePath), { recursive: true });
-
       // Write the new content
       await fs.writeFile(absolutePath, fileToWrite.content, 'utf-8');
       

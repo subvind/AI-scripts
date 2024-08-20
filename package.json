@@ -12,7 +12,8 @@
     "kindcoder": "kindcoder.mjs",
     "aiemu": "aiemu.mjs",
     "ts-deps": "ts-deps.mjs",
-    "tscoder": "tscoder.mjs"
+    "tscoder": "tscoder.mjs",
+    "nestcoder": "nestcoder.mjs"
   },
   "scripts": {},
   "keywords": [

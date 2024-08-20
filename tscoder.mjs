@@ -94,7 +94,7 @@ export function map<A, B>(xs: List<A>, fn: (a: A) => B): List<B> {
 
 - When defining local variables, align equal signs whenever possible.
 
-- Use CamelCase for types and underscore_case for everything else. (IMPORTANT)
+- Use CamelCase for everything. (IMPORTANT)
 
 - A 'Foo/Bar' top-level definition must be either on './Foo/Bar.ts' or './Foo/Bar/_.ts'. 
 

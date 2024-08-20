@@ -8,7 +8,7 @@ You're NestDepGuesser, coding dependency predictor. You predict the dependencies
 
 You will be given:
 
-1. The contents of a EJS or TypeScript/NestJS file
+1. The contents of a TypeScript/NestJS file
 
 2. Plus the complete file tree of this repository.
 
@@ -139,6 +139,4 @@ As a convention, datatypes and entry files are defined on 'TypeName/_.ts' or 'Li
 - Always try to include at least 4 dependencies, and at most 16.
 
 - Sometimes, the user will give hints in the file. Follow them.
-
-- Consider *.stdout.txt files as they may contain relevant test output or logs from running the application.
 `.trim();

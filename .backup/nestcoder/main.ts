@@ -62,36 +62,34 @@ export async function main() {
 
   // Predict additional dependencies
   pred = await predictDependencies(file, fileContent, request);
-  pred = pred.map(dep => dep.replace(/\.(ts|ejs|stdout\.txt)$/, '').replace(/\/_$/, ''));
+  pred = pred.map(dep => dep.replace(/\.ts$/, '').replace(/\/_$/, ''));
   deps = [...new Set([...deps, ...pred])];
-  deps = deps.filter(dep => !path.resolve(dep).startsWith(path.resolve(file.replace(/\.(ts|ejs|stdout\.txt)$/, ""))));
+  deps = deps.filter(dep => !path.resolve(dep).startsWith(path.resolve(file.replace(".ts",""))));
 
   // Read dependent files
   let depFiles = await Promise.all(deps.map(async (dep) => {
     let depPath, content;
-    let possiblePaths = [
-      path.join(dir, `${dep}.ts`),
-      path.join(dir, `${dep}/_.ts`),
-      path.join(dir, `${dep}.ejs`),
-      path.join(dir, `${dep}.stdout.txt`)
-    ];
-    
-    for (let possiblePath of possiblePaths) {
+    let path0 = path.join(dir, `${dep}.ts`);
+    let path1 = path.join(dir, `${dep}/_.ts`); 
+    try {
+      content = await fs.readFile(path0, 'utf-8');
+      depPath = path0;
+    } catch (error) {
       try {
-        content = await fs.readFile(possiblePath, 'utf-8');
-        depPath = possiblePath;
-        break;
+        content = await fs.readFile(path1, 'utf-8');
+        depPath = path1;
       } catch (error) {
-        // Continue to next possible path
+        return "";
       }
     }
-
-    if (!depPath) {
-      return "";
-    }
-
     return `<FILE path="${depPath}">\n${content}\n</FILE>`;
   }));
+
+  //console.log(dir, pred, deps, depFiles);
+  //process.exit();
+
+  // Perform initial type checking
+  //let initialCheck = (await typeCheck(defName)).replace(/\x1b\[[0-9;]*m/g, '');
 
   // Prepare AI input
   let aiInput = [
@@ -99,6 +97,9 @@ export async function main() {
     `<FILE path="${file}" TARGET>`,
     fileContent,
     '</FILE>',
+    //'<CHECKER>',
+    //initialCheck,
+    //'</CHECKER>',
     '<REQUEST>',
     request,
     '</REQUEST>'
@@ -119,6 +120,28 @@ export async function main() {
     console.error("Error: AI output does not contain any valid FILE tags.");
     process.exit(1);
   }
+
+  //// Write each file
+  //for (let fileToWrite of filesToWrite) {
+      //let absolutePath = path.resolve(fileToWrite.path);
+      //let currentDir = process.cwd();
+
+      //// Check if the file is within the current working directory
+      //if (!absolutePath.startsWith(currentDir)) {
+      //console.error(`Error: Cannot write to file outside of current working directory: ${fileToWrite.path}`);
+      //continue;
+      //}
+
+      //try {
+      //await fs.writeFile(absolutePath, fileToWrite.content, 'utf-8');
+      //console.log(`File updated successfully: ${fileToWrite.path}`);
+      //} catch (error) {
+      //console.error(`Error writing file ${fileToWrite.path}: ${error.message}`);
+      //}
+  //}
+
+  // PROBLEM: the code above overwrite files, which may cause data loss. Add a backup of each overwritten file to the ./backup directory. Note the path of the back-upped file (in the same line of the "file updated..." message). NOTE: the "backup created" message must be in the SAME LINE of the "file updated" message. i.e., it should show both paths on the message: the file updated, and its location inside the .backup dir.
+
 
   // Write each file
   for (let fileToWrite of filesToWrite) {
@@ -154,9 +177,9 @@ export async function main() {
       await fs.writeFile(absolutePath, fileToWrite.content, 'utf-8');
       
       console.log(`File updated successfully: ${fileToWrite.path}`);
-      console.log(`Backup created: ${backupPath})`);
     } catch (error) {
       console.error(`Error writing file ${fileToWrite.path}: ${error.message}`);
     }
   }
 }
+  

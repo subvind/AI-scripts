@@ -8,7 +8,7 @@ const CODE_MODEL = "claude-3-5-sonnet-20240620"; // default model for coding
 
 // NestDepGuesser System Prompt
 // --------------------------
-import { NestDepGuesser } from './nestdepsguesser.system-prompt';
+import { NestDepGuesser } from './nestdepsguesser.system-prompt.mjs';
 
 // Function to predict dependencies
 export async function predictDependencies(file, fileContent, request) {

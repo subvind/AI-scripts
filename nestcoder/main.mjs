@@ -13,9 +13,9 @@ const CODE_MODEL = "claude-3-5-sonnet-20240620"; // default model for coding
 
 // NestCoder System Prompt
 // ---------------------
-import { NestCoder } from './nestcoder.system-prompt';
+import { NestCoder } from './nestcoder.system-prompt.mjs';
 
-import { predictDependencies } from './predictDependencies';
+import { predictDependencies } from './predictDependencies.mjs';
 
 // Main function to handle the refactoring process
 export async function main() {
